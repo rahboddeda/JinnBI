@@ -7,6 +7,8 @@ import os
 import re
 
 app = Flask(__name__)
+os.makedirs(app.instance_path, exist_ok=True)
+LAYOUT_FILE = os.path.join(app.instance_path, 'dashboard_layout.json')
 
 # --- LLM Configuration ---
 encry = "um/qt/x3/::46772hdh:;779575fd;425485d;ee74gh4f8;8ec8:3665;67e5fgh8;67c8dc"
@@ -181,7 +183,7 @@ def generate_dashboard():
 def save_layout():
     try:
         data = request.json
-        with open('dashboard_layout.json', 'w') as f:
+        with open(LAYOUT_FILE, 'w') as f:
             json.dump(data, f)
         return jsonify({"status": "success"})
     except Exception as e:
@@ -190,8 +192,8 @@ def save_layout():
 @app.route('/load_layout', methods=['GET'])
 def load_layout():
     try:
-        if os.path.exists('dashboard_layout.json'):
-            with open('dashboard_layout.json', 'r') as f:
+        if os.path.exists(LAYOUT_FILE):
+            with open(LAYOUT_FILE, 'r') as f:
                 data = json.load(f)
             return jsonify(data)
         return jsonify({})
